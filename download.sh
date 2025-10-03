@@ -39,21 +39,26 @@ eval "$steamcmd_executable +force_install_dir $install_dir +login anonymous $ste
 
 install_dir="$install_dir/steamapps/workshop/content/$steam_appid"
 downloads_dir="$HOME/Downloads/steam-workshop/$steam_appid"
-mkdir -p "$downloads_dir" 
+mkdir -p "$downloads_dir"
 
 for item_id in "$@"; do
-    item_dir="$downloads_dir/$item_id"
-    
-    if [ -d $item_dir ]; then
-        rm -rf "$item_dir"
-    fi
+    download_dir="$install_dir/$item_id"
+    if [ -d $download_dir ]; then
+        item_dir="$downloads_dir/$item_id"
 
-    mv -f "$install_dir/$item_id" "$downloads_dir"
-
-    for gma_path in $item_dir/*; do
-        if [ -f "$gma_path" ]; then
-            eval "$fastgmad_executable extract -file $gma_path -out $item_dir/$(basename $gma_path .gma)"
+        if [ -d $item_dir ]; then
+            rm -rf "$item_dir"
         fi
-    done
+
+        mv -f "$install_dir/$item_id" "$downloads_dir"
+
+        for gma_path in $item_dir/*; do
+            if [ -f "$gma_path" ]; then
+                eval "$fastgmad_executable extract -file $gma_path -out $item_dir/$(basename $gma_path .gma)"
+            fi
+        done
+    else
+        echo "Failed to download item $item_id, skipping..."
+    end
 done
 
