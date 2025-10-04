@@ -59,6 +59,6 @@ for item_id in "$@"; do
         done
     else
         echo "Failed to download item $item_id, skipping..."
-    end
+    fi
 done
 
